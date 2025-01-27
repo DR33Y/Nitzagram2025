@@ -1,8 +1,6 @@
-import pygame
-from helpers import screen
-from constants import WINDOW_WIDTH, WINDOW_HEIGHT, BLACK
 from ImagePost import ImagePost
-from TextPost import TextPost
+from Comments import *
+from buttons import comment_button
 
 
 def main():
@@ -20,7 +18,8 @@ def main():
                                         (WINDOW_WIDTH, WINDOW_HEIGHT))
 
     # TODO: add a post here
-    img_post = ImagePost("Daniel Ross", "Beer-Sheva", "Some Text...", 6, [], 'Images/ronaldo.jpg')
+    comments = []
+    img_post = ImagePost("Daniel Ross", "Beer-Sheva", "Some Text...", 6, comments, 'Images/ronaldo.jpg')
 
     running = True
     while running:
@@ -29,6 +28,13 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if mouse_in_button(comment_button, pygame.mouse.get_pos()):
+
+                    new_text = read_comment_from_user()
+                    new_comment = Comments(new_text)
+                    img_post.add_comment(new_comment)
+                    img_post.display_comments()
 
         # Display the background, presented Image, likes, comments, tags and location(on the Image)
         screen.fill(BLACK)
@@ -36,6 +42,7 @@ def main():
         img_post.display()
 
         # Update display - without input update everything
+        img_post.display_comments()
         pygame.display.update()
 
         # Set the clock tick to be 60 times per second. 60 frames for second.
